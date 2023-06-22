@@ -8,23 +8,13 @@ export const Button = ({index, move, board, handleClick}) => {
 
   // board = [0,1,2,3,4,5,6,7,8]
 
-  const [title, setTitle] = useState(null)
-
-  useEffect(() => {
-
-  }, [title])
-
-
-  const handleTitle = (e) => {    
-    e.preventDefault()
-    if(!title){
+  const handleTitle = () => {    
+    if(!board[index]){
       if(move){
         board[index] = 'X'
-        setTitle(board[index])
       }
       else{
         board[index] = '0'
-        setTitle(board[index])
 
       }
       handleClick(!move, board)
@@ -67,23 +57,29 @@ export default function Home() {
   }
 
   const handleIsNextMove = (nextMoveValue, boardValue) => {
-    if(nextMoveValue){
-      setNext('X')
-    }else{
-      setNext('O')
+    console.log("🚀 ~ file: page.tsx:70 ~ handleIsNextMove ~ nextMoveValue:", nextMoveValue)
+    console.log("🚀 ~ file: page.tsx:71 ~ handleIsNextMove ~ winner:", !winner)
+    if(!winner){
+      if(nextMoveValue){
+        setNext('X')
+      }else{
+        setNext('O')
+      }
+  
+      const copy = [...boardHistory]
+      copy.push([...boardValue])
+      setBoardHistory(copy)
+      setIsNextMove(nextMoveValue)
+      setBoard(boardValue)
+      handleWinner(boardValue)
     }
-
-    const copy = [...boardHistory]
-    copy.push([...boardValue])
-    setBoardHistory(copy)
-    setIsNextMove(nextMoveValue)
-    setBoard(boardValue)
-    handleWinner(boardValue)
+    else{
+      setIsNextMove(false)
+    }
   }
 
 
   const handleBoard = (index) => {
-    console.log('----------->',boardHistory)
     setBoard([...boardHistory[index]])
   }
 
@@ -113,14 +109,14 @@ export default function Home() {
             </div>
           </div>
           <div className="w-6/12 p-10">
-            <p className="text-2xl font-sans">Next move is: {next}</p>
-            <div className="flex space-x-2">
+          {!winner && <p className="text-2xl font-sans">Next move is: {next}</p>}
+            {/* <div className="flex space-x-2">
             [{
               board.length && board.map((item, i) => (
                 <p key={i}>{String(item)}</p>
                 ))
             }]
-            </div>
+            </div> */}
             <div className="flex flex-col">
               {
                 boardHistory.length && boardHistory.map((item, index) => (
